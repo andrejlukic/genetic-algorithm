@@ -6,14 +6,14 @@ from random import random, randint, shuffle
 from EightQueensPopulation import *
 
 N = 8  # number of queens
-N_POPULATION = 100  # size of population
-P_MUTATION = 0.03  # probability of mutation
+N_POPULATION = 1000  # size of population
+P_MUTATION = 0.1  # probability of mutation
 
 def addstats(data, val):
     if not data is None:
         data.append([i.fitness() for i in val._pop])
 
-def genetic_algo(stdata=None):
+def genetic_algo(stdata=None, culling_on=True, elitism_on=True):
     gen_i = 0  # Generation count
     old_gen = EightQueensPopulation(N, size=N_POPULATION, generation=gen_i)
 
@@ -24,8 +24,8 @@ def genetic_algo(stdata=None):
 
         for i in range(N_POPULATION):
 
-            parents = old_gen.pick_n(culling=False)
-            baby, inx = next_gen.offspring(parents)
+            parents = old_gen.pick_n()
+            baby, inx = next_gen.offspring_V1(parents)
 
             next_gen.log((parents[0], parents[1], inx, baby))
 
@@ -33,7 +33,7 @@ def genetic_algo(stdata=None):
                 baby, inx = baby.mutate()
                 next_gen.log((baby, inx))
 
-            if (next_gen.size() < old_gen.size()):
+            if (next_gen.size() < N_POPULATION):
                 next_gen.grow(baby)
 
             not_found = not baby.is_goal()
@@ -42,7 +42,15 @@ def genetic_algo(stdata=None):
                 # Found solution:
                 print(baby)
                 break
+        # If elitism is on, take top N% of individuals
+        e = None
+        if elitism_on:
+            e = old_gen.get_elite()
+
         old_gen = next_gen
+
+        if culling_on:
+            old_gen.culling(elite=e)
         gen_i += 1
         # old_gen.print_state(dump_pop=False)
 

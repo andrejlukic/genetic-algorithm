@@ -1,23 +1,38 @@
 import numpy as np
-from random import randint
+from random import randint, choice
 
 
 class EightQueensState:
     """This class represents a board in the eight queens puzzle"""
 
-    def __init__(self, n, state=None):
+    def __init__(self, n, state=None, smarter_init_on=True):
         """
         :param state: pass in a numpy array of integers to set the state, otherwise will be generated randomly
         :param n: only used if state is not provided, determines size of board (default: 8)
         """
         if state is None:
             self.n = n
-            state = np.random.randint(0, n, n)
+            if smarter_init_on:
+                state = self.smarter_init(n)
+            else:
+                state = np.random.randint(0, n, n)
         else:
             self.n = len(state)
 
         self.state = state
         self._fitness = ((self.n * (self.n - 1)) - self.cost()) / 2
+
+    def smarter_init(self, queens):
+        """This creates initial state by avoiding previously used column"""
+        q1 = np.random.randint(0, queens, 1)[0]
+        remaining = self.range_missing(0, queens, q1)
+        state = np.empty(queens)
+        state[0]=q1
+        for i in range(1, queens):
+            q1 = choice(remaining)
+            state[i] = q1
+            remaining.remove(q1)
+        return state
 
     @staticmethod
     def copy_replace(state, i, x):
@@ -85,4 +100,7 @@ class EightQueensState:
             return f"Goal state! {self.state}"
         else:
             return f"{self.state} cost {self.cost()}"
+
+# q = EightQueensState(8)
+# print(q.smarter_init(8))
 
