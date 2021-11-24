@@ -3,15 +3,20 @@ Genetic algorithm example - 8 queens problem
 
 ### Modifications to the skeleton code excluding enhancements
 
-* supporting N queens for any N>=2
-* adding fitness score and calculating it once to avoid recomputing
-* adding a separate class representing the population 
+Some modifications and extensions were made to the skeleton code provided with the assignment:
+* The skeleton code has been generalized to work with any positive number of queens (N>=2).
+* A fitness score has been added. It's calculated once only to avoid recomputing
+* A separate class has been added to represent the population of individuals
+* Code used to collect statistics and create graphs has been added separately. It is available alongside the Jupyter notebool in three files:
+    * EightQueensState.py - represents state of the board
+    * EightQueensPopulation.py - represents the population of individuals
+    * main.py - algorithm and statistics collecting function with visualization  
 
-### Supporting N queens for any N>=2
+## Enhancements to the basic algorithm
 
-The skeleton code has been generalized to work with any positive number of queens (N>=2).
+Several enhancements were attempted and not all were retained. Following is a list of those enhancements that were retained in the chronological order of testing, enhancements being added cumulatively. Each of the enhancements has a test suite included. A test suite repeated the measurements 10x and measured the number of generations required to reach the solution and elapsed time. For each test population fitness is logged and this is used to visualze the progression of fitness score from start to solution. To conserve space only 2 graphs out of 10 are included in the appendix out of the full test suite. These graphs provide an alternative way to observe convergence to the solution under different conditions. 
 
-### Generating initial states by avoiding same row clashes
+### 1. Generating initial states by avoiding same row clashes
 
 When generating the individuals a simple rules is enforced .
 
@@ -24,7 +29,7 @@ When generating the individuals a simple rules is enforced .
         self._pop = l
 ```
 
-### Culling
+### 2. Culling
 
 Out of the population of potential individuals the best 80% is chosen to mate and produce offspring. The relevant function is culling and it sorts the population based on the fitness score and then cuts off the least performing 20%.
 
@@ -37,7 +42,7 @@ Out of the population of potential individuals the best 80% is chosen to mate an
         self._pop = l
 ```
 
-### Elitism
+### 3. Elitism
 
 To avoid losing the best individuals in the population, a certain percentage of the best of the preceding generation is passed on to the next. It is combined with culling so that instead of reducing the total population, the culled percentage is replaced by the top X% of the preceding generation.
 
@@ -58,13 +63,15 @@ To avoid losing the best individuals in the population, a certain percentage of 
         take = int(percent*len(l))
         return l[:take]
 ```
-### Adjusting the population size and the mutation rate
+### 2. Adjusting the population size and the mutation rate
 
 After trying out several different values for the population size it became obvious that in combination with culling and elitism larger population is preferable. Starting with N=100 considerable improvements in speed (4x) were observed by increasing the population size to N=1000. 
 
 Mutation rate was another parameter that proved crucial. Several rates between 1%-10% were used and the mutation rate between 7%-10% proved to be optimal for speed.
 
-### Test run 1 - basic algorithm without improvements
+## Test results
+
+### 1. Test results - basic algorithm without improvements
 Running the basic algorithm with the following parameters: 
 * population N=100
 * 8 queens 
@@ -87,7 +94,7 @@ Running the basic algorithm with the following parameters:
 | **Max**  | **7263**  | **192.4**  | #  |
 | **Stddev**  | **2500.1**  | **66.5**  | #  |
 
-### Test run 2 - improving initial states generation by avoiding queens in same rows
+### 2. Test results - improving initial states generation by avoiding queens in same rows
 
 | Run | Generations | Time elapsed | Converged |
 | --- | ----------- | ------------ | --------- |
@@ -106,7 +113,7 @@ Running the basic algorithm with the following parameters:
 |  **Max**   | **5864**        | **160**  |  # |
 |  **Stddev**   | **2191,4** | **59,7** |  # |
 
-### Test run 3 - culling the population each generation and leaving only top 80% of parents to produce offspring
+### 3. Test results - culling the population each generation and leaving only top 80% of parents to produce offspring
 
 | Run | Generations | Time elapsed | Converged |
 | --- | ----------- | ------------ | --------- |
@@ -125,7 +132,7 @@ Running the basic algorithm with the following parameters:
 | **Max**    | **4090**        | **118,8**     | # | 
 |  **Stddev**   | **1537,7**  | **44,9**       | #|  
 
-### Test run 4 - bumping the mutation rate from Pm=3% to Pm=10%
+### 4. Test results - bumping the mutation rate from Pm=3% to Pm=10%
 
 | Run    | Generations | Time elapsed | Converged |
 | ------ | ----------- | ------------ | --------- |
@@ -139,12 +146,12 @@ Running the basic algorithm with the following parameters:
 | 8      | 1071        | 30,70        | Yes       |
 | 9      | 308         | 8,60         | Yes       |
 | 10     | 93          | 2,70         | Yes       |
-| **Avg    | **494,6**       | **13,9**        | #         |
-| **Min    | **89**       | **2,5**          | #         |
-| **Max    | **1274**        | **37**           | #         |
-| **Stddev | **41,2** | **12,8**   | #         |
+| **Avg**    | **494,6**       | **13,9**        | #         |
+| **Min**    | **89**       | **2,5**          | #         |
+| **Max**    | **1274**        | **37**           | #         |
+| **Stddev** | **41,2** | **12,8**   | #         |
 
-### Test run 5 - bumping the population size from N=100 to N=1000
+### 5. Test results - bumping the population size from N=100 to N=1000
 
 | Run    | Generations | Time elapsed | Converged |
 | ------ | ----------- | ------------ | --------- |
@@ -164,9 +171,9 @@ Running the basic algorithm with the following parameters:
 | **Stddev** | **11,5**  | **4,8**   | #         |
 
 
-### Appendix
+## Appendix
 
-#### Appendix 1 - test run results, basic algorithm
+### 1. Test visualized - basic algorithm
 
 Legend:
 * Red colour - average fitness of one state
@@ -176,7 +183,7 @@ Legend:
 ![image info](testruns/N8_P100_M003_01.png)
 ![image info](testruns/N8_P100_M003_02.png)
 
-#### Appendix 2 - test run results, basic algorithm with smarter init
+### 2. Test visualized - basic algorithm with smarter init
 
 Legend:
 * Red colour - average fitness of one state
@@ -186,7 +193,7 @@ Legend:
 ![image info](testruns/B_N8_P100_M003_02.png)
 ![image info](testruns/B_N8_P100_M003_03.png)
 
-#### Appendix 3 - test run results, basic algorithm with smarter init and culling
+### 3. Test visualized - basic algorithm with smarter init and culling
 
 Legend:
 * Red colour - average fitness of one state
@@ -196,7 +203,7 @@ Legend:
 ![image info](testruns/C_N8_P100_M003_01.png)
 ![image info](testruns/C_N8_P100_M003_02.png)
 
-#### Appendix 4 - test run results, basic algorithm with smarter init and culling and bumped mutation rate
+### 4. Test visualized - basic algorithm with smarter init and culling and bumped mutation rate
 
 Legend:
 * Red colour - average fitness of one state
@@ -206,7 +213,7 @@ Legend:
 ![image info](testruns/E_N8_P100_M003_01.png)
 ![image info](testruns/E_N8_P100_M003_02.png)
 
-#### Appendix 5 - test run results, basic algorithm with smarter init and culling and population N=1000
+### 5. Test visualized - basic algorithm with smarter init and culling and population N=1000
 
 Legend:
 * Red colour - average fitness of one state
