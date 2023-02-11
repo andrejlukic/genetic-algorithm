@@ -2,6 +2,8 @@
 
 The goal of this work was to solve the problem of 8 and N (N!=8) queens using a genetic algorithm. The problem was first solved using a basic genetic algorithm and the code was extended and tested for any N>=2. Eventually enhancements were introduced that brought down average execution time from over 50 seconds to under 5 seconds for 8 queens.   
 
+![N-Queens](./resources/eight_queens.png)
+
 ### Modifications to the skeleton code excluding enhancements
 
 Some modifications and extensions were made to the skeleton code provided with the assignment:
